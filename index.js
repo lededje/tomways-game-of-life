@@ -1,3 +1,6 @@
+const terminalOverwrite = require('terminal-overwrite');
+const chalk = require('chalk');
+
 const defaultMap = [
   ['L', 'L', 'W', 'W', 'L'],
   ['L', 'L', 'L', 'L', 'L'],
@@ -11,7 +14,11 @@ const resources = {
   population: 0,
 };
 
+let gameTimer;
+let currentTick = 0;
 let state = defaultMap;
+
+
 
 const tick = (state) => {
   const nextState = state.map((row, x) => {
@@ -93,8 +100,41 @@ const getNeighbours = (state, chords) => {
   return result;
 }
 
-for(let i = 0; i < 10; i++) {
-  console.log(state, resources, i);
-  state = tick(state);
+const render = (state) => {
+  const tiles = state.map((row) => {
+    return row.map((tile) => {
+      switch(tile) {
+        case 'L': {
+          return chalk.greenBright('██');
+        }
+        case 'C': {
+          return chalk.grey('██');
+        }
+        case 'F': {
+          return chalk.green('██');
+        }
+        case 'W': {
+          return chalk.blue('██');
+        }
+        default: {
+          return '?';
+        }
+      }
+    });
+  });
+
+  const frame = tiles.map((row) => {
+    return row.join('');
+  }).join('\n')
+
+  terminalOverwrite(frame);
 }
-console.log(state, resources, 'final state')
+
+gameTimer = setInterval(() => {
+  render(state);
+  state = tick(state);
+}, 1000)
+
+process.once('SIGUR2', () => {
+  clearInterval(gameTimer)
+});

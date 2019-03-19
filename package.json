@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodemon": "^1.18.10"
+    "chalk": "^2.4.2",
+    "nodemon": "^1.18.10",
+    "terminal-overwrite": "^2.0.1"
   }
 }
